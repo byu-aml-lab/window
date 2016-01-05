@@ -55,7 +55,7 @@ def run_plot(num_pts=100, maximize=False, interval_secs=5, xaxis_fmt='%I:%M'):
         for loads in data:
             plt.plot(times, loads)
 
-        plt.title('AML Lab Cluster Loads')
+        plt.title('AML Lab Cluster Loads', fontsize=60)
         plt.gca().xaxis.set_major_formatter(dates.DateFormatter(xaxis_fmt))
         plt.draw()
 
