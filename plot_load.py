@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Real time plot of potato loads"""
 
@@ -8,6 +8,7 @@ import matplotlib
 import matplotlib.dates as dates
 import matplotlib.pyplot as plt
 import re
+import seaborn
 import subprocess
 import time
 
@@ -29,7 +30,7 @@ def parse_load(line):
         return 0
 
 
-def main(num_pts=100, maximize=False, interval_secs=5):
+def run_plot(num_pts=100, maximize=False, interval_secs=5, xaxis_fmt='%I:%M'):
     """Runs the interactive plot of potato load"""
     matplotlib.rcParams['toolbar'] = 'None'
     if maximize:
@@ -43,6 +44,8 @@ def main(num_pts=100, maximize=False, interval_secs=5):
     data = [collections.deque([load], num_pts) for load in get_loads()]
     times = collections.deque([datetime.datetime.now()], num_pts)
 
+    seaborn.set_palette('Set2', len(data))
+
     while True:
         for loads, new_load in zip(data, get_loads()):
             loads.append(new_load)
@@ -50,13 +53,13 @@ def main(num_pts=100, maximize=False, interval_secs=5):
 
         plt.clf()
         for loads in data:
-            plt.plot(times, loads, 'b-')
+            plt.plot(times, loads)
 
         plt.title('AML Lab Cluster Loads')
-        plt.gca().xaxis.set_major_formatter(dates.DateFormatter('%I:%M'))
+        plt.gca().xaxis.set_major_formatter(dates.DateFormatter(xaxis_fmt))
         plt.draw()
 
         time.sleep(interval_secs)
 
 if __name__ == '__main__':
-    main(maximize=True)
+    run_plot(1000, True, 30)
